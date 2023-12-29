@@ -85,21 +85,35 @@ session_start();
                                         }
                                     }
                                     
-                                    include 'koneksi.php';
                                     
-                                    $authentication = new Authentication($koneksi);
-                                    
-                                    if (isset($_GET['input']) && $_GET['input'] == 'login') {
-                                        $email = $_GET['email'];
-                                        $password = $_GET['password'];
-                                    
-                                        $result = $authentication->login($email, $password);
-                                    
-                                        if ($result) {
-                                            header("location: index.php");
-                                            exit();
+                                    class Proses extends Authentication{
+
+                                        public function __construct($koneksi){
+                                            return parent::__construct($koneksi); //polimophism, mengambil method __constructor dari class induk
                                         }
-                                    }
+                                        public function login($email, $password)
+                                        {
+                                            $query = "SELECT * FROM tb_user WHERE email='$email' AND password='$password'";
+                                            $result = mysqli_query($this->koneksi, $query);
+                                    
+                                            return $result;
+                                        }
+                                        public function cek(){
+                                            $authentication = new Authentication($koneksi);
+                                        
+                                            if (isset($_GET['input']) && $_GET['input'] == 'login') {
+                                                $email = $_GET['email'];
+                                                $password = $_GET['password'];
+                                            
+                                                $result = $authentication->login($email, $password);
+                                            
+                                                if ($result) {
+                                                    header("location: index.php");
+                                                    exit();
+                                                }
+                                            }
+                                        }
+                                    }   
                                     ?>
                                     
                                     <div class="text-center">
